@@ -29,6 +29,10 @@ AL<WeightType>::AL(const CSR<WeightType>& csr, ...) {
             weights[i].push_back(csr.weights[j]);
         }
     }
+    this->weight_vertex.resize(csr.n);
+    for (int i = 0; i < csr.n; i++) {
+        this->weight_vertex[i] = csr.weight_vertex[i];
+    }
 }
 
 template <typename WeightType>

@@ -15,6 +15,7 @@ AL<WeightType> stars_generator(int n, bool weighted = false) {
         graph.n = 6 * n;
         graph.edges.resize(graph.n);
         graph.weights.resize(graph.n);
+        graph.weight_vertex.resize(graph.n, 1);
         for (int i = 0; i < graph.n; i += 6) {
             for (int j = 1; j < 6; ++j) {
                 graph.edges[i].push_back(i + j);
@@ -30,7 +31,7 @@ AL<WeightType> stars_generator(int n, bool weighted = false) {
             }
         }
     }
-    catch (std::bad_alloc ba) {
+    catch (std::bad_alloc& ba) {
         std::cerr << ba.what() << std::endl;
     }
     return graph;

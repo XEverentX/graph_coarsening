@@ -170,49 +170,75 @@ void PipelineParser::Pipeline::launch() {
                 if (type == "random") {
                     for (int i = 0; i < count; ++i) {
                         graph = graph_coarsening(graph,
-                                random_matching(graph));
+                                    [](const CSR<double>& graph) -> Matching {
+                            return random_matching<double>(graph);
+                        });
                         std::cout << "iteration: " << i << " n: " << graph.n
                                 << " m: " << graph.edges.size() << std::endl;
                     }
                 } else if (type == "hard") {
                     for (int i = 0; i < count; ++i) {
-                        graph = graph_coarsening(graph, hard_matching(graph));
+                        graph = graph_coarsening(graph,
+                                [](const CSR<double>& graph) -> Matching {
+                            return hard_matching<double>(graph);
+                            });
                         std::cout << "iteration: " << i << " n: " << graph.n
                                 << " m: " << graph.edges.size() << std::endl;
                     }
                 } else if (type == "edmonds") {
                     for (int i = 0; i < count; ++i) {
-                        graph = graph_coarsening(graph, edmonds(graph));
+                        graph = graph_coarsening(graph,
+                                    [](const CSR<double>& graph) -> Matching {
+                            return edmonds<double>(graph);
+                            });
                         std::cout << "iteration: " << i << " n: " << graph.n
                                 << " m: " << graph.edges.size() << std::endl;
                     }
                 } else if (type == "gpa") {
                     if (subtype == "random") {
                         for (int i = 0; i < count; ++i) {
-                            graph = graph_coarsening(graph, GPA(graph,
+                            graph = graph_coarsening(graph,
                                 [](const CSR<double>& graph) -> Matching {
-                                    return random_matching(graph);
-                                }));
+                                    return GPA(graph,
+                                    [](const CSR<double>& graph) -> Matching {
+                                        return random_matching(graph);
+                                    });});
                             std::cout << "iteration: " << i << " n: "
                                 << graph.n << " m: " << graph.edges.size()
                                 << std::endl;
                         }
                     } else if (subtype == "hard") {
                         for (int i = 0; i < count; ++i) {
-                            graph = graph_coarsening(graph, GPA(graph,
+                            graph = graph_coarsening(graph,
                                 [](const CSR<double>& graph) -> Matching {
-                                    return hard_matching(graph);
-                                }));
+                                    return GPA(graph,
+                                    [](const CSR<double>& graph) -> Matching {
+                                        return hard_matching(graph);
+                                    });});
                             std::cout << "iteration: " << i << " n: "
                                 << graph.n << " m: " << graph.edges.size()
                                 << std::endl;
                         }
                     } else if (subtype == "edmonds") {
                         for (int i = 0; i < count; ++i) {
-                            graph = graph_coarsening(graph, GPA(graph,
+                            graph = graph_coarsening(graph,
                                 [](const CSR<double>& graph) -> Matching {
-                                    return edmonds(graph);
-                                }));
+                                    return GPA(graph,
+                                    [](const CSR<double>& graph) -> Matching {
+                                        return edmonds(graph);
+                                    });});
+                            std::cout << "iteration: " << i << " n: "
+                                << graph.n << " m: " << graph.edges.size()
+                                << std::endl;
+                        }
+                    } else if (subtype == "mwm") {
+                        for (int i = 0; i < count; ++i) {
+                            graph = graph_coarsening(graph,
+                                [](const CSR<double>& graph) -> Matching {
+                                    return GPA(graph,
+                                    [](const AL<double>& graph) -> Matching {
+                                        return max_weight_matching(graph);
+                                    });});
                             std::cout << "iteration: " << i << " n: "
                                 << graph.n << " m: " << graph.edges.size()
                                 << std::endl;
@@ -221,6 +247,69 @@ void PipelineParser::Pipeline::launch() {
                         throw std::runtime_error("Missing subtype for " + type);
                     } else {
                         throw std::runtime_error("Unknown subtype: " + type);
+                    }
+                } else if (type == "pga") {
+                    if (subtype == "random") {
+                        for (int i = 0; i < count; ++i) {
+                            graph = graph_coarsening(graph,
+                                [](const CSR<double>& graph) -> Matching {
+                                    return PGA(graph,
+                                    [](const CSR<double>& graph) -> Matching {
+                                        return random_matching(graph);
+                                    });});
+                            std::cout << "iteration: " << i << " n: "
+                                << graph.n << " m: " << graph.edges.size()
+                                << std::endl;
+                        }
+                    } else if (subtype == "hard") {
+                        for (int i = 0; i < count; ++i) {
+                            graph = graph_coarsening(graph,
+                                [](const CSR<double>& graph) -> Matching {
+                                    return PGA(graph,
+                                    [](const CSR<double>& graph) -> Matching {
+                                        return hard_matching(graph);
+                                    });});
+                            std::cout << "iteration: " << i << " n: "
+                                << graph.n << " m: " << graph.edges.size()
+                                << std::endl;
+                        }
+                    } else if (subtype == "edmonds") {
+                        for (int i = 0; i < count; ++i) {
+                            graph = graph_coarsening(graph,
+                                [](const CSR<double>& graph) -> Matching {
+                                    return PGA(graph,
+                                    [](const CSR<double>& graph) -> Matching {
+                                        return edmonds(graph);
+                                    });});
+                            std::cout << "iteration: " << i << " n: "
+                                << graph.n << " m: " << graph.edges.size()
+                                << std::endl;
+                        }
+                    } else if (subtype == "mwm") {
+                        for (int i = 0; i < count; ++i) {
+                            graph = graph_coarsening(graph,
+                                [](const CSR<double>& graph) -> Matching {
+                                    return PGA(graph,
+                                    [](const AL<double>& graph) -> Matching {
+                                        return max_weight_matching(graph);
+                                    });});
+                            std::cout << "iteration: " << i << " n: "
+                                << graph.n << " m: " << graph.edges.size()
+                                << std::endl;
+                        }
+                    } else if (subtype == "_no_parameter") {
+                        throw std::runtime_error("Missing subtype for " + type);
+                    } else {
+                        throw std::runtime_error("Unknown subtype: " + type);
+                    }
+                } else if (type == "lam") {
+                    for (int i = 0; i < count; ++i) {
+                        graph = graph_coarsening(graph,
+                                    [](const CSR<double>& graph) -> Matching {
+                            return LAM<double>(graph);
+                            });
+                        std::cout << "iteration: " << i << " n: " << graph.n
+                                << " m: " << graph.edges.size() << std::endl;
                     }
                 } else {
                     throw std::runtime_error("Unknown matching: " + type);
@@ -295,7 +384,7 @@ void PipelineParser::Pipeline::launch() {
                         "for evaluation: " + chars);
                 }
                 std::cout << "Finished evaluate command" << std::endl;
-            } catch (std::bad_alloc ba) {
+            } catch (std::bad_alloc& ba) {
                 std::cerr << ba.what() << std::endl;
                 std::cout << "Failed evaluate command" << std::endl;
             }

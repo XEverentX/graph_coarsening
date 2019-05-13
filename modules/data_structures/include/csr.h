@@ -30,6 +30,10 @@ CSR<WeightType>::CSR(const AL<WeightType>& al, ...) {
         }
         offset.push_back(edges.size());
     }
+    this->weight_vertex.resize(al.n);
+    for (int i = 0; i < al.n; i++) {
+        this->weight_vertex[i] = al.weight_vertex[i];
+    }
 }
 
 template <typename WeightType>
