@@ -9,9 +9,9 @@ struct CSR : public Graph<WeightType> {
     std::vector <int> edges;
     std::vector <WeightType> weights;
     std::vector <int> offset;
+    std::vector <int> weight_vertex;
     CSR() = default;
     CSR(const AL<WeightType>& al, ...);
-    CSR(const JDS<WeightType>& jds, ...);
     bool get_neighbours(
         std::vector <std::pair <int, WeightType>>* neighbours,
         int vertex, int anc) const override;
@@ -37,22 +37,6 @@ CSR<WeightType>::CSR(const AL<WeightType>& al, ...) {
 }
 
 template <typename WeightType>
-CSR<WeightType>::CSR(const JDS<WeightType>& jds, ...) {
-    this->n = jds.n;
-    offset.push_back(0);
-    std::vector <std::pair <int, int>> neighbours;
-    for (int i = 0; i < this->n; ++i) {
-        neighbours.clear();
-        jds.get_neighbours(&neighbours, i, i);
-        for (auto& y : neighbours) {
-            edges.push_back(y.first);
-            weights.push_back(y.second);
-        }
-        offset.push_back(edges.size());
-    }
-}
-
-template <typename WeightType>
 bool CSR<WeightType>::get_neighbours(
     std::vector <std::pair <int, WeightType>>* neighbours,
     int vertex, int anc) const {
@@ -72,6 +56,7 @@ bool CSR<WeightType>::read(const std::string& path) {
     offset.resize(this->n + 1);
     edges.resize(m);
     weights.resize(m);
+    weight_vertex.resize(m);
     for (int i = 0; i < m; ++i)
         in.read(reinterpret_cast<char*>(&edges[i]), sizeof(int));
     for (int i = 0; i <= this->n; ++i)
