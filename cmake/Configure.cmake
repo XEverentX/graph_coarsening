@@ -27,6 +27,9 @@ endif()
 
 set(MAIN_DIR ${CMAKE_SOURCE_DIR})
 
+include_directories(${MAIN_DIR})
+include_directories("${MAIN_DIR}/3rdparty/filesystem/include")
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_definitions(-DCOMPILER_NAME="g++")
 endif()
@@ -62,7 +65,7 @@ endif( UNIX )
 if ( MSVC )
     set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MDd" )
     if(CMAKE_BUILD_TYPE STREQUAL "RELEASE")
-        set(CMAKE_CXX_FLAGS_RELEASE "/O3")
+        set(CMAKE_CXX_FLAGS_RELEASE "/O2")
     endif()
 endif( MSVC )
 

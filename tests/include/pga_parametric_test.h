@@ -4,9 +4,6 @@
 #include "../../modules/pch/include/precomp.h"
 #include "gtest/gtest.h"
 
-static std::random_device rd2;
-static std::mt19937 generator2(rd2());
-
 class pga_washington_test : public testing::TestWithParam<int> {
  public:
     pga_washington_test() {
@@ -15,11 +12,9 @@ class pga_washington_test : public testing::TestWithParam<int> {
 
     void pga_on_csr_random() {
         CSR<int> csr = washington_test<int>(value);
-        std::cout << 1 << std::endl;
         Matching matching = PGA(csr, [](const CSR<int>& graph) -> Matching {
             return random_matching<int>(graph);
         });
-        std::cout << 2 << std::endl;
         std::vector <int> ed(csr.n, 0);
         int k = 1;
         for (int i = 0; i < matching.n; i++) {
@@ -578,18 +573,10 @@ class pga_cube_test : public testing::TestWithParam<int> {
  private:
     int value;
 };
-std::vector <int> generates(int start, int end) {
-    std::vector <int> res;
-    for (int i = 0; i < 3; i++) {  // upper bound was equal to 10
-        res.push_back(std::uniform_int_distribution<int>(start, end)
-                            (generator2));
-    }
-    return res;
-}
 
-std::vector <int> washs = generates(0, 50);  // was 1000
-std::vector <int> zadehs = generates(0, 50);  // was 1000
-std::vector <int> cubes = generates(0, 10);  // was 100
+std::vector <int> pga_washington_samples = generate_samples(0, 50, 5);
+std::vector <int> pga_zadeh_samples = generate_samples(0, 50, 5);
+std::vector <int> pga_cube_samples = generate_samples(0, 10, 5);
 
 
 TEST_P(pga_washington_test, csr) {
@@ -689,11 +676,11 @@ TEST_P(pga_cube_test, csr7) {
 }
 
 INSTANTIATE_TEST_SUITE_P(pga_test, pga_washington_test,
-                    testing::ValuesIn(washs));
+                    testing::ValuesIn(pga_washington_samples));
 
 INSTANTIATE_TEST_SUITE_P(pga_test, pga_zadeh_test,
-                    testing::ValuesIn(zadehs));
+                    testing::ValuesIn(pga_zadeh_samples));
 
 INSTANTIATE_TEST_SUITE_P(pga_test, pga_cube_test,
-                    testing::ValuesIn(cubes));
+                    testing::ValuesIn(pga_cube_samples));
 #endif  // TESTS_INCLUDE_PGA_PARAMETRIC_TEST_H_

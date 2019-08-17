@@ -1,6 +1,10 @@
 // Copyright [year] <Copyright Owner>
 #ifndef MODULES_PCH_INCLUDE_PRECOMP_H_
 #define MODULES_PCH_INCLUDE_PRECOMP_H_
+
+// Defines
+#define NOMINMAX
+
 // OpenMP
 #include <omp.h>
 // C++
@@ -9,6 +13,7 @@
 #include <random>
 #include <climits>
 #include <exception>
+#include <memory>
 // STL
 #include <algorithm>
 #include <numeric>
@@ -18,6 +23,7 @@
 #include <functional>
 #include <set>
 #include <map>
+#include <stack>
 #include <queue>
 #include <sstream>
 // Graph common
@@ -56,6 +62,9 @@
 #include "modules/common/include/export.h"
 // yaml
 #include "3rdparty/libyaml/include/yaml.h"
-#include "modules/pipelines/include/parser.h"
+#include "modules/pipelines/include/yaml_parser.h"
+#include "modules/pipelines/include/pipeline_parser.h"
+// Filesystem
+#include "ghc/filesystem.hpp"
 
 #endif  // MODULES_PCH_INCLUDE_PRECOMP_H_
