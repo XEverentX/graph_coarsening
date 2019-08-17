@@ -46,9 +46,9 @@ TEST(greedy_test, personal_test_csr_3) {
 
 TEST(greedy_test, personal_test_csr_4) {
     CSR<double> graph;
-    graph.n = 6;
+    graph.n = 7;
     graph.offset = {0, 1, 2, 3, 4, 5, 6, 6};
-    graph.edges = {4, 4, 4, 4, 4, 5, 6};
+    graph.edges = {4, 4, 4, 4, 5, 6};
     graph.weights = {20, 20, 15, 30, 40, 39};
     Matching expected;
     Matching ans = LAM(graph);
